@@ -1,6 +1,6 @@
 import { type Course, type Student, type StudentID, type Transcript } from "./types.ts";
 
-export class TranscriptDB {
+export class TranscriptService {
   /**
    * The list of transcripts in the database
    */
@@ -10,6 +10,11 @@ export class TranscriptDB {
    * The last assigned student ID
    */
   private _lastID: number = 0;
+
+  clear() {
+    this._transcripts = [];
+    this._lastID = 0;
+  }
 
   /**
    * Adds a new student to the database
@@ -22,6 +27,16 @@ export class TranscriptDB {
     const newStudent: Student = { studentID: newID, studentName: newName };
     this._transcripts.push({ student: newStudent, grades: [] });
     return newID;
+  }
+
+  /**
+   * @param studentName
+   * @returns list of studentIDs associated with that name
+   */
+  nameToIDs(studentName: string): StudentID[] {
+    return this._transcripts
+      .filter((t) => t.student.studentName === studentName)
+      .map((t) => t.student.studentID);
   }
 
   /**
