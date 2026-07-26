@@ -2,7 +2,7 @@ import { type Request, type Response } from 'express'
 import { z } from 'zod'
 
 import { checkPassword } from './auth.service.ts'
-import { TranscriptService } from './transcript.service.ts'
+import { TranscriptService } from './transcript.serviceUsingRepo.ts'
 import type { Transcript } from './types.ts'
 
 const service = new TranscriptService()
@@ -39,7 +39,7 @@ function withValidation<T extends {password: string}>(
 
 /* Handle API requests to create a new student record */
 const zAddStudentBody = z.object({
-  password: z.string().min(8).max(12),
+  password: z.string().max(12),
   studentName: z.string().max(16),
 })
 
@@ -50,7 +50,7 @@ export const addStudent = withValidation(zAddStudentBody, data => ({
 
 /* Handle API requests to add a grade to a student */
 const zAddGradeBody = z.object({
-  password: z.string().min(8).max(12),
+  password: z.string().max(12),
   studentID: z.int().gte(0),
   courseName: z.string(),
   courseGrade: z.number().gte(0).lte(100),
@@ -67,7 +67,7 @@ export const addGrade = withValidation(zAddGradeBody, data => {
 
 /* Handle API requests to retrieve a student transcript */
 const zGetTranscriptBody = z.object({
-  password: z.string().min(8).max(12),
+  password: z.string().max(12),
   studentID: z.int().gte(0),
 })
 

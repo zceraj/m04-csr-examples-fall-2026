@@ -25,7 +25,11 @@ export class TranscriptService {
    */
   addStudent(newName: string): StudentID {
     const newID = this._db.newRecord(newName);
-    this._db.setData(newID, { student: { studentID: newID, studentName: newName }, grades: [] });
+    const newTranscript: Transcript = {
+      student: { studentID: newID, studentName: newName },
+      grades: [],
+    };
+        this._db.setData(newID, newTranscript);
     return newID;
   }
 
