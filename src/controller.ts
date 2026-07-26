@@ -1,5 +1,5 @@
 import express, { type Request, type Response } from "express";
-import { z } from "zod";
+import {zAddStudentBody} from "./zedTypes.ts";
 
 import { checkPassword } from "./auth.service.ts";
 import { TranscriptService } from "./transcript.service.ts";
@@ -9,14 +9,22 @@ const app = express();
 app.use(express.json()); // deliver the request bodies as JSON.
 const service = new TranscriptService();
 
-/* Handle API requests to create a new student record */
-const zAddStudentBody = z.object({
-  password: z.string(),
-  studentName: z.string(),
-});
+function
 
 export function addStudent(req: Request, res: Response) {
   const body = zAddStudentBody.safeParse(req.body);
+  if (!body.success) {
+    res.status(400).send({ error: "Poorly-formed request" });
+  } else if (!checkPassword(body.data.password)) {
+    res.status(403).send({ error: "Invalid credentials" });
+  } else {
+    const id = service.addStudent(body.data.studentName);
+    res.send({ studentID: id });
+  }
+}
+
+export function addStudentUnsafe(req: Request, res: Response) {
+  const body = req.body;
   if (!body.success) {
     res.status(400).send({ error: "Poorly-formed request" });
   } else if (!checkPassword(body.data.password)) {

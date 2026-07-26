@@ -1,7 +1,7 @@
 import supertest, { type Response } from "supertest";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { app } from "./app.ts";
+import { app } from "./server.ts";
 let response: Response;
 
 /** it would be more robust to reset the database explicitly, but this will do. */

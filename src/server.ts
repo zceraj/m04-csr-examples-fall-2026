@@ -1,9 +1,11 @@
-// Run this script to launch the server.
-/* eslint no-console: "off" */
+// server.ts
+import express from "express";
+import * as controller from "./controller.ts";
 
-import { app } from "./app.ts";
+export const app = express();
+app.use(express.json());
 
-const PORT = parseInt(process.env.PORT || "3000");
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// define routes for the API endpoints, and delegate to the controller functions
+app.post("/api/addStudent", controller.addStudent);
+app.post("/api/addGrade", controller.addGrade);
+app.post("/api/getTranscript", controller.getTranscript);

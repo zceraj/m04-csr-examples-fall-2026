@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { TranscriptService } from "./transcript.service.ts";
+import { TranscriptService } from "./serviceUsingRepo.ts";
 
 const service = new TranscriptService();
 beforeEach(() => {
