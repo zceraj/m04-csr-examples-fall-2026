@@ -1,4 +1,4 @@
-import { SimpleDB } from "./repo.ts";
+import { SimpleDB } from "./simpleRepo.ts";
 import { type Course, type StudentID, type Transcript } from "./types.ts";
 
 /**
@@ -29,7 +29,7 @@ export class TranscriptService {
       student: { studentID: newID, studentName: newName },
       grades: [],
     };
-        this._db.setData(newID, newTranscript);
+    this._db.setData(newID, newTranscript);
     return newID;
   }
 
@@ -49,11 +49,11 @@ export class TranscriptService {
    * @throws if there is no transcript with the given student ID
    */
   getTranscript(id: StudentID): Transcript {
-    const transcript = this._db.getData(id);
-    if (!transcript) {
+    const record = this._db.getRecord(id);
+    if (!record || record.data === undefined) {
       throw new Error(`Transcript not found for student with ID ${id}`);
     }
-    return transcript;
+    return record.data;
   }
 
   /**

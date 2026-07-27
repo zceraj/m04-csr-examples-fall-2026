@@ -1,4 +1,15 @@
 /**
+ * A record stored in the database: a unique numeric ID, a name, and arbitrary
+ * "other stuff" (data) typed via the generic parameter T. The data is left
+ * unset (undefined) until setData() is called.
+ */
+interface DataRecord<T> {
+  id: number;
+  name: string;
+  data: T | undefined;
+}
+
+/**
  * The public interface of a simple in-memory database that stores records
  * keyed by an auto-assigned numeric ID. Each record has a unique ID, a name,
  * and arbitrary "other stuff" typed via the generic parameter T.
@@ -27,10 +38,11 @@ interface ISimpleDB<T> {
   setData(id: number, data: T): void;
 
   /**
-   * Gets the "other stuff" (data) for the record with the given ID.
-   * Returns undefined if no record exists, or if data was never set.
+   * Gets the entire record (ID, name, and data) with the given ID.
+   * Returns undefined only when no record with that ID exists; a record whose
+   * data was never set is returned with its data field undefined.
    */
-  getData(id: number): T | undefined;
+  getRecord(id: number): DataRecord<T> | undefined;
 
   /**
    * Returns the IDs of all records with the given name.
@@ -39,4 +51,4 @@ interface ISimpleDB<T> {
   nameToIDs(name: string): number[];
 }
 
-export { type ISimpleDB };
+export { type DataRecord, type ISimpleDB };
