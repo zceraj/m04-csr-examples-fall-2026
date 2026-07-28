@@ -44,27 +44,32 @@ describe(`nameToIDs()`, () => {
   });
 });
 
-describe(`getData() / setData()`, () => {
-  it("returns undefined for a record whose data was never set", async () => {
-    const id = await db.newRecord("Alvin");
-    expect(await db.getData(id)).toBeUndefined();
-  });
-
+describe(`getRecord() / setData()`, () => {
   it("returns undefined for an ID that does not exist", async () => {
-    expect(await db.getData(999)).toBeUndefined();
+    expect(await db.getRecord(999)).toBeUndefined();
   });
 
-  it("round-trips the data that was set", async () => {
+  it("returns the full record (id, name, data) for an existing ID", async () => {
     const id = await db.newRecord("Alvin");
-    await db.setData(id, "transcript-payload");
-    expect(await db.getData(id)).toBe("transcript-payload");
+    await db.setData(id, "payload");
+    expect(await db.getRecord(id)).toStrictEqual({ id, name: "Alvin", data: "payload" });
+  });
+
+  it("returns a record with undefined data when data was never set", async () => {
+    const id = await db.newRecord("Alvin");
+    const record = await db.getRecord(id);
+    // The store JSON-serializes records, so an unset data property is dropped;
+    // the contract is only that record.data reads as undefined.
+    expect(record?.id).toBe(id);
+    expect(record?.name).toBe("Alvin");
+    expect(record?.data).toBeUndefined();
   });
 
   it("overwrites data on a second setData", async () => {
     const id = await db.newRecord("Alvin");
     await db.setData(id, "first");
     await db.setData(id, "second");
-    expect(await db.getData(id)).toBe("second");
+    expect((await db.getRecord(id))?.data).toBe("second");
   });
 
   it("keeps data for different records independent", async () => {
@@ -72,8 +77,8 @@ describe(`getData() / setData()`, () => {
     const id2 = await db.newRecord("Bryn");
     await db.setData(id1, "alvin-data");
     await db.setData(id2, "bryn-data");
-    expect(await db.getData(id1)).toBe("alvin-data");
-    expect(await db.getData(id2)).toBe("bryn-data");
+    expect((await db.getRecord(id1))?.data).toBe("alvin-data");
+    expect((await db.getRecord(id2))?.data).toBe("bryn-data");
   });
 
   it("rejects when setting data on a non-existent ID", async () => {
@@ -90,7 +95,7 @@ describe(`deleteRecord()`, () => {
     const id = await db.newRecord("Alvin");
     await db.setData(id, "data");
     expect(await db.deleteRecord(id)).toBe(true);
-    expect(await db.getData(id)).toBeUndefined();
+    expect(await db.getRecord(id)).toBeUndefined();
   });
 
   it("removes the deleted ID from its name index", async () => {
@@ -112,7 +117,7 @@ describe(`clear()`, () => {
     const id = await db.newRecord("Alvin");
     await db.setData(id, "data");
     await db.clear();
-    expect(await db.getData(id)).toBeUndefined();
+    expect(await db.getRecord(id)).toBeUndefined();
     expect(await db.nameToIDs("Alvin")).toStrictEqual([]);
   });
 });

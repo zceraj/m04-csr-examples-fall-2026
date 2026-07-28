@@ -1,3 +1,5 @@
+import type { DataRecord } from "./ISimpleDB.ts";
+
 /**
  * The public interface of a persistent database that stores records keyed by
  * an auto-assigned numeric ID. Each record has a unique ID, a name, and
@@ -32,10 +34,11 @@ interface IPersistentDB<T> {
   setData(id: number, data: T): Promise<void>;
 
   /**
-   * Gets the "other stuff" (data) for the record with the given ID.
-   * Resolves with undefined if no record exists, or if data was never set.
+   * Gets the entire record (ID, name, and data) with the given ID.
+   * Resolves with undefined only when no record with that ID exists; a record
+   * whose data was never set resolves with its data field undefined.
    */
-  getData(id: number): Promise<T | undefined>;
+  getRecord(id: number): Promise<DataRecord<T> | undefined>;
 
   /**
    * Returns the IDs of all records with the given name.

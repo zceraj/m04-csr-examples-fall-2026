@@ -1,6 +1,7 @@
 import { Keyv } from "keyv";
 
 import type { IPersistentDB } from "./IPersistentDB.ts";
+import type { DataRecord } from "./ISimpleDB.ts";
 
 /**
  * A persistent database backed by keyv. Records are keyed by an auto-assigned
@@ -22,12 +23,6 @@ import type { IPersistentDB } from "./IPersistentDB.ts";
  * could race under concurrent calls; a durable backend would need transactions
  * or atomic counters to be concurrency-safe.
  */
-
-interface Record<T> {
-  id: number;
-  name: string;
-  data: T | undefined;
-}
 
 /** keyv key under which the next-ID counter is stored. */
 const NEXT_ID_KEY = "meta:nextId";
@@ -79,7 +74,7 @@ class KeyvDB<T> implements IPersistentDB<T> {
    * was found and deleted, false otherwise.
    */
   async deleteRecord(id: number): Promise<boolean> {
-    const record = await this._store.get<Record<T>>(recordKey(id));
+    const record = await this._store.get<DataRecord<T>>(recordKey(id));
     if (!record) {
       return false;
     }
@@ -102,7 +97,7 @@ class KeyvDB<T> implements IPersistentDB<T> {
    * Rejects if no record with that ID exists.
    */
   async setData(id: number, data: T): Promise<void> {
-    const record = await this._store.get<Record<T>>(recordKey(id));
+    const record = await this._store.get<DataRecord<T>>(recordKey(id));
     if (!record) {
       throw new Error(`No record with ID ${id}`);
     }
@@ -110,12 +105,12 @@ class KeyvDB<T> implements IPersistentDB<T> {
   }
 
   /**
-   * Gets the "other stuff" (data) for the record with the given ID.
-   * Resolves with undefined if no record exists, or if data was never set.
+   * Gets the entire record (ID, name, and data) with the given ID.
+   * Resolves with undefined only when no record with that ID exists; a record
+   * whose data was never set resolves with its data field undefined.
    */
-  async getData(id: number): Promise<T | undefined> {
-    const record = await this._store.get<Record<T>>(recordKey(id));
-    return record?.data;
+  async getRecord(id: number): Promise<DataRecord<T> | undefined> {
+    return this._store.get<DataRecord<T>>(recordKey(id));
   }
 
   /**
@@ -127,4 +122,4 @@ class KeyvDB<T> implements IPersistentDB<T> {
   }
 }
 
-export { KeyvDB, type Record };
+export { KeyvDB };
