@@ -14,7 +14,7 @@ interface DataRecord<T> {
  * keyed by an auto-assigned numeric ID. Each record has a unique ID, a name,
  * and arbitrary "other stuff" typed via the generic parameter T.
  */
-interface ISimpleDB<T> {
+interface ISimpleRepo<T> {
   /** Removes all records from the database. */
   clear(): void;
 
@@ -51,4 +51,4 @@ interface ISimpleDB<T> {
   nameToIDs(name: string): number[];
 }
 
-export { type DataRecord, type ISimpleDB };
+export { type DataRecord, type ISimpleRepo as ISimpleDB };

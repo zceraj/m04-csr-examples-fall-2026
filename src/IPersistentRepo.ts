@@ -1,4 +1,4 @@
-import type { DataRecord } from "./ISimpleDB.ts";
+import type { DataRecord } from "./ISimpleRepo.ts";
 
 /**
  * The public interface of a persistent database that stores records keyed by
@@ -10,7 +10,7 @@ import type { DataRecord } from "./ISimpleDB.ts";
  * every operation is asynchronous and returns a Promise. A rejected Promise
  * signals that the operation could not be completed (e.g. a storage failure).
  */
-interface IPersistentDB<T> {
+interface IPersistentRepo<T> {
   /** Removes all records from the database. */
   clear(): Promise<void>;
 
@@ -47,4 +47,4 @@ interface IPersistentDB<T> {
   nameToIDs(name: string): Promise<number[]>;
 }
 
-export { type IPersistentDB };
+export { type IPersistentRepo as IPersistentDB };

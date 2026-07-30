@@ -1,4 +1,4 @@
-import type { DataRecord, ISimpleDB } from "./ISimpleDB.ts";
+import type { DataRecord, ISimpleDB } from "./ISimpleRepo.ts";
 
 /**
  * A simple in-memory database that stores records keyed by a numeric ID.

@@ -2,10 +2,10 @@ import { type Request, type Response } from "express";
 import { z } from "zod";
 
 import { checkPassword } from "./auth.service.ts";
-import { TranscriptService } from "./transcript.serviceUsingRepo.ts";
+import { PersistentTranscriptService } from "./persistentTranscriptService.ts";
 import type { Transcript } from "./types.ts";
 
-const service = new TranscriptService();
+const service = new PersistentTranscriptService();
 
 /* The single shape of every response: the status code and the body to send. */
 type HandlerResponse = { status: number; body: unknown };
@@ -23,15 +23,15 @@ type BodySchema<T> = {
  */
 function withValidation<T extends { password: string }>(
   zodSchema: BodySchema<T>,
-  responseFn: (data: T) => HandlerResponse,
+  responseFn: (data: T) => Promise<HandlerResponse>,
 ) {
-  return (req: Request, res: Response) => {
+  return async (req: Request, res: Response) => {
     const parsed = zodSchema.safeParse(req.body);
     const handlerResponse: HandlerResponse = !parsed.success
       ? { status: 400, body: { error: "Poorly-formed request" } }
       : !checkPassword(parsed.data.password)
         ? { status: 403, body: { error: "Invalid credentials" } }
-        : responseFn(parsed.data);
+        : await responseFn(parsed.data);
 
     res.status(handlerResponse.status).send(handlerResponse.body); // the one and only response
   };
@@ -43,9 +43,9 @@ const zAddStudentBody = z.object({
   studentName: z.string().max(16),
 });
 
-export const addStudent = withValidation(zAddStudentBody, (data) => ({
+export const addStudent = withValidation(zAddStudentBody, async (data) => ({
   status: 200,
-  body: { studentID: service.addStudent(data.studentName) },
+  body: { studentID: await service.addStudent(data.studentName) },
 }));
 
 /* Handle API requests to add a grade to a student */
@@ -56,9 +56,9 @@ const zAddGradeBody = z.object({
   courseGrade: z.number().gte(0).lte(100),
 });
 
-export const addGrade = withValidation(zAddGradeBody, (data) => {
+export const addGrade = withValidation(zAddGradeBody, async (data) => {
   try {
-    service.addGrade(data.studentID, data.courseName, data.courseGrade);
+    await service.addGrade(data.studentID, data.courseName, data.courseGrade);
     return { status: 200, body: { success: true } };
   } catch {
     return { status: 200, body: { success: false } };
@@ -71,9 +71,9 @@ const zGetTranscriptBody = z.object({
   studentID: z.int().gte(0),
 });
 
-export const getTranscript = withValidation(zGetTranscriptBody, (data) => {
+export const getTranscript = withValidation(zGetTranscriptBody, async (data) => {
   try {
-    const transcript: Transcript = service.getTranscript(data.studentID);
+    const transcript: Transcript = await service.getTranscript(data.studentID);
     return { status: 200, body: { success: true, transcript } };
   } catch {
     return { status: 200, body: { success: false } };

@@ -19,7 +19,7 @@ describe(`nameToIDs()`, () => {
   });
   it("returns an empty list for a name that has not been added", () => {
     service.addStudent("Alvin"); // we don't care about the ID here, just that it exists
-    
+
     service.addStudent("Bryn");
     expect(service.nameToIDs("Carol")).toStrictEqual([]);
   });

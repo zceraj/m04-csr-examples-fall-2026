@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { KeyvDB } from "./keyvDB.ts";
+import { KeyvDB } from "./persistentRepo.ts";
 
 // A fresh in-memory KeyvDB for each test. T is a simple string here.
 let db: KeyvDB<string>;
@@ -27,7 +27,9 @@ describe(`newRecord()`, () => {
 
 describe(`nameToIDs()`, () => {
   it("initially returns an empty list for any name", async () => {
-    expect(await db.nameToIDs("Alvin")).toStrictEqual([]);
+    await db.clear();
+    const alvinIDs: number[] = await db.nameToIDs("Alvin");
+    expect(alvinIDs).toStrictEqual([]);
   });
 
   it("returns the IDs of records added under a name, in insertion order", async () => {

@@ -1,7 +1,7 @@
 import { Keyv } from "keyv";
 
-import type { IPersistentDB } from "./IPersistentDB.ts";
-import type { DataRecord } from "./ISimpleDB.ts";
+import type { IPersistentDB } from "./IPersistentRepo.ts";
+import type { DataRecord } from "./ISimpleRepo.ts";
 
 /**
  * A persistent database backed by keyv. Records are keyed by an auto-assigned
