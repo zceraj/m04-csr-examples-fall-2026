@@ -1,5 +1,5 @@
 import { KeyvDB } from "./persistentRepo.ts";
-import { type Course, type StudentID, type Transcript } from "./types.ts";
+import { type Course, type StudentID, type Transcript } from "../types.ts";
 
 /**
  * A transcript service backed by the KeyvDB persistent repository. It offers the

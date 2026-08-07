@@ -1,9 +1,9 @@
 import { type Request, type Response } from "express";
 import { z } from "zod";
 
-import { checkPassword } from "./auth.service.ts";
-import { PersistentTranscriptService } from "./persistentTranscriptService.ts";
-import type { Transcript } from "./types.ts";
+import { checkPassword } from "../auth.service.ts";
+import { PersistentTranscriptService } from "./transcipt.service.PersistentRepo.ts";
+import type { Transcript } from "../types.ts";
 
 const service = new PersistentTranscriptService();
 
@@ -19,7 +19,7 @@ type BodySchema<T> = {
  * Build a request handler that parses and authenticates the body, then delegates
  * to `handle` for the happy path. The handler contains the only `res.send` in the
  * file, so each request is answered exactly once by construction: `handle` returns
- * a value and never touches `res`, and every path yields a single `HandlerResult`.
+ * a value and never touches `res`, and every path yields a single `HandlerResponse`.
  */
 function withValidation<T extends { password: string }>(
   zodSchema: BodySchema<T>,
@@ -32,7 +32,6 @@ function withValidation<T extends { password: string }>(
       : !checkPassword(parsed.data.password)
         ? { status: 403, body: { error: "Invalid credentials" } }
         : await responseFn(parsed.data);
-
     res.status(handlerResponse.status).send(handlerResponse.body); // the one and only response
   };
 }

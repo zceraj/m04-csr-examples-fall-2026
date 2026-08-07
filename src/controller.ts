@@ -2,7 +2,7 @@ import { type Request, type Response } from "express";
 import { z } from "zod";
 
 import { checkPassword } from "./auth.service.ts";
-import { TranscriptService } from "./transcript.serviceUsingRepo.ts";
+import { TranscriptService } from "./withSimpleRepo/transcript.service.SimpleRepo.ts";
 import type { Transcript } from "./types.ts";
 
 const service = new TranscriptService();
@@ -32,7 +32,6 @@ function withValidation<T extends { password: string }>(
       : !checkPassword(parsed.data.password)
         ? { status: 403, body: { error: "Invalid credentials" } }
         : responseFn(parsed.data);
-
     res.status(handlerResponse.status).send(handlerResponse.body); // the one and only response
   };
 }
