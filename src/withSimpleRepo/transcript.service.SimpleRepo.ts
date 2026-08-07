@@ -1,5 +1,5 @@
-import { SimpleDB } from "./simpleRepo.ts";
 import { type Course, type StudentID, type Transcript } from "../types.ts";
+import { SimpleDB } from "./simpleRepo.ts";
 
 /**
  * A transcript service backed by the SimpleDB repository. It offers the same

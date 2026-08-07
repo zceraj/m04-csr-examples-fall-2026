@@ -2,8 +2,8 @@ import { type Request, type Response } from "express";
 import { z } from "zod";
 
 import { checkPassword } from "./auth.service.ts";
-import { TranscriptService } from "./withSimpleRepo/transcript.service.SimpleRepo.ts";
 import type { Transcript } from "./types.ts";
+import { TranscriptService } from "./withSimpleRepo/transcript.service.SimpleRepo.ts";
 
 const service = new TranscriptService();
 

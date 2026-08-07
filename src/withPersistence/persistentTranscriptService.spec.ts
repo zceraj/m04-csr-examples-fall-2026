@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { PersistentTranscriptService } from "./transcipt.service.PersistentRepo.ts";
+import { PersistentTranscriptService } from "./transcript.service.PersistentRepo.ts";
 
 // A fresh in-memory service for each test.
 let service: PersistentTranscriptService;

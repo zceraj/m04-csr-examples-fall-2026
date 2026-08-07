@@ -1,4 +1,4 @@
-import type { DataRecord } from "./ISimpleRepo.ts";
+import type { DataRecord } from "../withSimpleRepo/ISimpleRepo.ts";
 
 /**
  * The public interface of a persistent database that stores records keyed by

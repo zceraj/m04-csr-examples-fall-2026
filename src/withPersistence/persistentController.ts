@@ -2,8 +2,8 @@ import { type Request, type Response } from "express";
 import { z } from "zod";
 
 import { checkPassword } from "../auth.service.ts";
-import { PersistentTranscriptService } from "./transcipt.service.PersistentRepo.ts";
 import type { Transcript } from "../types.ts";
+import { PersistentTranscriptService } from "./transcript.service.PersistentRepo.ts";
 
 const service = new PersistentTranscriptService();
 
