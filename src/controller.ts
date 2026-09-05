@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { checkPassword } from "./auth.service.ts";
 import type { Transcript } from "./types.ts";
-import { TranscriptService } from "./withSimpleRepo/transcript.service.SimpleRepo.ts";
+import { TranscriptService } from "./withSimpleRepo/simpleRepo.service.ts";
 
 const service = new TranscriptService();
 

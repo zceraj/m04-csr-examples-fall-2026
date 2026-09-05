@@ -1,4 +1,5 @@
 import { type Course, type StudentID, type Transcript } from "../types.ts";
+import type { ITranscriptService } from "./ITranscriptService.ts";
 import { KeyvDB } from "./persistentRepo.ts";
 
 /**
@@ -8,7 +9,7 @@ import { KeyvDB } from "./persistentRepo.ts";
  * the student ID. Because the backing store may be out of process, every method
  * is asynchronous.
  */
-export class PersistentTranscriptService {
+export class PersistentTranscriptService implements ITranscriptService {
   /**
    * The database of transcripts, keyed by student ID. The record name is the
    * student's name, so the database's own name index backs nameToIDs.

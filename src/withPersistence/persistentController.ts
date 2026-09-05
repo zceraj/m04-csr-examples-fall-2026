@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { checkPassword } from "../auth.service.ts";
 import type { Transcript } from "../types.ts";
-import { PersistentTranscriptService } from "./transcript.service.PersistentRepo.ts";
+import { PersistentTranscriptService } from "./persistentService.ts";
 
 const service = new PersistentTranscriptService();
 
