@@ -10,3 +10,4 @@ app.use(express.json());
 app.post("/api/addStudent", controller.addStudent);
 app.post("/api/addGrade", controller.addGrade);
 app.post("/api/getTranscript", controller.getTranscript);
+app.post("/api/getGPA". controller.getGPA);
