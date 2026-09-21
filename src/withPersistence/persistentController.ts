@@ -78,3 +78,19 @@ export const getTranscript = withValidation(zGetTranscriptBody, async (data) => 
     return { status: 200, body: { success: false } };
   }
 });
+
+/* Handle API requests to retrieve a student GPA */
+const zGetGpaBody = z.object({ 
+  password: z.string().max(12),
+  studentID: z.int().gte(0),
+});
+
+export const getGpa = withValidation(zGetGpaBody, async (data) => {
+  try {
+    const gpa: number = await service.getGPA(data.studentID);
+    return { status: 200, body: { success: true, gpa } };
+  } catch {
+    return { status: 200, body: { success: false } };
+  }
+});
+
