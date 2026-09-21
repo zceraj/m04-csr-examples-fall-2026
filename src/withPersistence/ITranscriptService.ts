@@ -42,6 +42,17 @@ interface ITranscriptService {
    * @throws if there is no transcript with the given student ID
    */
   addGrade(id: StudentID, courseName: Course, courseGrade: number): Promise<void>;
+
+  /**
+   * Returns a GPA for a given ID. Weighing each course equally and only 
+   * counting the highest grade if student takes a course more than once. 
+   * 
+   * ** ADD WHY WE PUT IT HERE 
+   * 
+   * @param id 
+   * @returns GPA for the given student ID
+   */
+  getGPA(id: StudentID): Promise<number>;
 }
 
 export type { ITranscriptService };
