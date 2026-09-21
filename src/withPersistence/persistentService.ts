@@ -1,5 +1,6 @@
 import { type Course, type StudentID, type Transcript } from "../types.ts";
 import type { ITranscriptService } from "./ITranscriptService.ts";
+import { getTranscript } from "./persistentController.ts";
 import { KeyvDB } from "./persistentRepo.ts";
 
 /**
@@ -82,5 +83,38 @@ export class PersistentTranscriptService implements ITranscriptService {
       grades: [...transcript.grades, { course: courseName, grade: courseGrade }],
     };
     await this._db.setData(id, updated);
+  }
+
+  /**
+   * Calculates the GPA for a given student ID. 
+   * Weighs each course equally and only counts the highest grade 
+   * if a student takes a course more than once.
+   * 
+   * @param id 
+   * @returns GPA for the given student ID on 100 pt scale 
+   */
+  async getGPA(id: StudentID): Promise<number> { 
+    const transcript = await this.getTranscript(id);
+    const grades = transcript.grades;
+
+    if (grades.length === 0) {
+      return 0; 
+    }
+
+    // in case of 2 of the same course
+    const courseGradesMap: Record<Course, number> = {};
+
+    for (const { course, grade } of grades) {
+      if (!courseGradesMap[course] || grade > courseGradesMap[course]) {
+        courseGradesMap[course] = grade;
+      }
+    }
+
+    const totalGrades = Object.values(courseGradesMap).reduce((sum, grade) => sum + grade, 0);
+    const gpa = totalGrades / Object.keys(courseGradesMap).length;
+
+    // returning not on a 4.0 scale -- 100 pt scale!!! 
+
+    return gpa;
   }
 }
